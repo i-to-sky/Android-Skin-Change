@@ -17,7 +17,7 @@ public class SPUtil {
 
     private SPUtil(){}
 
-    public SPUtil getInstance(){
+    public static SPUtil getInstance(){
         if (mInstance == null){
             synchronized (SPUtil.class){
                 if (mInstance == null){
@@ -29,7 +29,7 @@ public class SPUtil {
     }
 
     public void init(Context context){
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
 
     public String getSkinPluginPath(){
