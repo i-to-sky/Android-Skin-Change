@@ -8,4 +8,6 @@ public interface ISkinUpdate {
 
     void onSkinUpdate();
 
+    void onNotifySkinUpdate();
+
 }

@@ -33,7 +33,7 @@ public class SkinManager {
 
     private SkinManager(){}
 
-    private static SkinManager getInstance(){
+    public static SkinManager getInstance(){
         if (mInstance == null){
             synchronized (SkinManager.class){
                 if (mInstance == null){
@@ -103,6 +103,20 @@ public class SkinManager {
         PackageManager packageManager = mContext.getPackageManager();
         return packageManager.getPackageArchiveInfo(skinPluginPath, PackageManager.GET_ACTIVITIES);
     }
+
+    public void notifyChangedListeners(){
+
+        if (mSkinObservers == null){
+            return;
+        }
+
+        for (ISkinUpdate observer : mSkinObservers){
+            observer.onNotifySkinUpdate();
+        }
+
+    }
+
+
 
     public void register(ISkinUpdate observer){
 
