@@ -7,10 +7,13 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.text.TextUtils;
 
+import com.example.i_to_sky.skin_library.listener.ISkinUpdate;
 import com.example.i_to_sky.skin_library.utils.SPUtil;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by weiyupei on 2018/10/11.
@@ -25,6 +28,8 @@ public class SkinManager {
 
     private String mSkinPluginPath;
     private String mSkinPluginPackage;
+
+    private List<ISkinUpdate> mSkinObservers = new ArrayList<>();
 
     private SkinManager(){}
 
@@ -97,6 +102,39 @@ public class SkinManager {
     private PackageInfo getPackageInfo(String skinPluginPath){
         PackageManager packageManager = mContext.getPackageManager();
         return packageManager.getPackageArchiveInfo(skinPluginPath, PackageManager.GET_ACTIVITIES);
+    }
+
+    public void register(ISkinUpdate observer){
+
+        if (mSkinObservers == null) {
+            mSkinObservers = new ArrayList<>();
+        }
+
+        if (observer != null){
+
+            if (!mSkinObservers.contains(observer)){
+                mSkinObservers.add(observer);
+            }
+
+            observer.onSkinUpdate();
+        }
+
+    }
+
+    public void unRegister(ISkinUpdate observer) {
+
+        if (mSkinObservers == null){
+            return;
+        }
+
+        if (!mSkinObservers.contains(observer)) {
+            mSkinObservers.remove(observer);
+        }
+
+    }
+
+    public Resources getSkinPluginResources(){
+        return mSkinPluginResources;
     }
 
 }
