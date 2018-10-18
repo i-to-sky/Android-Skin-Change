@@ -12,4 +12,6 @@ public class SkinConfig {
 
     public static final String SKIN_PLUGIN_PACKAGE = "skin_plugin_package";
 
+    public static final String SKIN_PREFIX ="skin:";
+
 }

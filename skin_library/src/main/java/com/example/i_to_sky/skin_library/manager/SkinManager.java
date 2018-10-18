@@ -6,9 +6,12 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.example.i_to_sky.skin_library.listener.ISkinUpdate;
+import com.example.i_to_sky.skin_library.skinview.SkinView;
 import com.example.i_to_sky.skin_library.utils.SPUtil;
+import com.example.i_to_sky.skin_library.utils.SkinViewUtil;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -145,6 +148,10 @@ public class SkinManager {
             mSkinObservers.remove(observer);
         }
 
+    }
+
+    public List<SkinView> getSkinViews(View view){
+        return SkinViewUtil.getSkinViews(view);
     }
 
     public Resources getSkinPluginResources(){
