@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.example.i_to_sky.skin_library.listener.ISkinUpdate;
 import com.example.i_to_sky.skin_library.manager.SkinManager;
+import com.example.i_to_sky.skin_library.skinview.SkinView;
 
 import java.util.List;
 
@@ -43,15 +44,19 @@ public class DemoActivity extends AppCompatActivity implements ISkinUpdate{
         });
     }
 
-    //待实现
     @Override
     public void onNotifySkinUpdate() {
-
+        updateView();
     }
 
-    //待实现
     private void updateView(){
-
+       List<SkinView> skinViews = SkinManager.getInstance().getSkinViews(mContentView);
+       if (skinViews == null || skinViews.isEmpty()) {
+           return;
+       }
+       for (SkinView skinView : skinViews){
+           skinView.apply();
+       }
     }
 
 }
