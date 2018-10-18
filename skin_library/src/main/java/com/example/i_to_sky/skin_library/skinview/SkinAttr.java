@@ -14,14 +14,13 @@ public class SkinAttr {
     public BaseAttrType mAttrType;
 
 
-
     public SkinAttr(BaseAttrType attrType, String resName) {
         mResName = resName;
         mAttrType = attrType;
     }
 
-    public void apply(View view) {
-        mAttrType.apply(view, mResName);
+    public void applySkin(View view) {
+        mAttrType.applySkin(view, mResName);
     }
 
 }

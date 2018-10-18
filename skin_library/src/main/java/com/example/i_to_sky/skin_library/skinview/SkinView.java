@@ -10,22 +10,21 @@ import java.util.List;
 
 public class SkinView {
 
-    public View mView ;
+    public View mView;
     public List<SkinAttr> mAttrs;
 
-    public SkinView(View view, List<SkinAttr> skinAttrs)
-    {
+    public SkinView(View view, List<SkinAttr> skinAttrs) {
         mView = view;
         mAttrs = skinAttrs;
     }
 
-    public void apply()
-    {
-        if (mView == null) return;
+    public void applySkin() {
+        if (mView == null) {
+            return;
+        }
 
-        for (SkinAttr attr : mAttrs)
-        {
-            attr.apply(mView);
+        for (SkinAttr attr : mAttrs) {
+            attr.applySkin(mView);
         }
     }
 

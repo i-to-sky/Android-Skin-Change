@@ -16,7 +16,7 @@ import java.util.List;
  * Created by weiyupei on 2018/10/14.
  */
 
-public class DemoActivity extends AppCompatActivity implements ISkinUpdate{
+public class DemoActivity extends AppCompatActivity implements ISkinUpdate {
 
     private ViewGroup mContentView;
 
@@ -49,14 +49,14 @@ public class DemoActivity extends AppCompatActivity implements ISkinUpdate{
         updateView();
     }
 
-    private void updateView(){
-       List<SkinView> skinViews = SkinManager.getInstance().getSkinViews(mContentView);
-       if (skinViews == null || skinViews.isEmpty()) {
-           return;
-       }
-       for (SkinView skinView : skinViews){
-           skinView.apply();
-       }
+    private void updateView() {
+        List<SkinView> skinViews = SkinManager.getInstance().getSkinViews(mContentView);
+        if (skinViews == null || skinViews.isEmpty()) {
+            return;
+        }
+        for (SkinView skinView : skinViews) {
+            skinView.applySkin();
+        }
     }
 
 }

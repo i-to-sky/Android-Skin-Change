@@ -84,8 +84,6 @@ public class SkinManager {
 
         Resources superResources = mContext.getResources();
         mSkinPluginResources = new Resources(assetManager, superResources.getDisplayMetrics(), superResources.getConfiguration());
-
-
     }
 
     private boolean isValidPluginInfo(String skinPluginPath, String skinPluginPackage){

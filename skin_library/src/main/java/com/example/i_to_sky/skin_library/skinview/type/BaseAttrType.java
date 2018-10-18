@@ -12,6 +12,6 @@ public abstract class BaseAttrType {
     public final static String TYPE_TEXTCOLOR = "textColor";
     public final static String TYPE_SRC = "src";
 
-    public abstract void apply(View view, String resName);
+    public abstract void applySkin(View view, String resName);
 
 }

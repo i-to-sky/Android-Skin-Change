@@ -9,7 +9,7 @@ import android.view.View;
 public class SrcType extends BaseAttrType {
 
     @Override
-    public void apply(View view, String resName) {
+    public void applySkin(View view, String resName) {
 
     }
 }
