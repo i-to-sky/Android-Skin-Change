@@ -117,8 +117,6 @@ public class SkinManager {
 
     }
 
-
-
     public void register(ISkinUpdate observer){
 
         if (mSkinObservers == null) {
