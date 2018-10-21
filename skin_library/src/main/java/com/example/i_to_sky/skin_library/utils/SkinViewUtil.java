@@ -51,7 +51,7 @@ public class SkinViewUtil {
 
         Object tag = view.getTag();
 
-        if (!(tag instanceof String)) {
+        if (tag == null || !(tag instanceof String)) {
             return null;
         }
 

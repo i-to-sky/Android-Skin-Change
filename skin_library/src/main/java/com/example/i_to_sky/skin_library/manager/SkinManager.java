@@ -28,6 +28,7 @@ public class SkinManager {
 
     private Context mContext;
     private Resources mSkinPluginResources;
+    private ResourcesManager mResourcesManager;
 
     private String mSkinPluginPath;
     private String mSkinPluginPackage;
@@ -84,6 +85,7 @@ public class SkinManager {
 
         Resources superResources = mContext.getResources();
         mSkinPluginResources = new Resources(assetManager, superResources.getDisplayMetrics(), superResources.getConfiguration());
+        mResourcesManager = new ResourcesManager(mSkinPluginResources, skinPluginPackage);
     }
 
     private boolean isValidPluginInfo(String skinPluginPath, String skinPluginPackage){
@@ -150,8 +152,8 @@ public class SkinManager {
         return SkinViewUtil.getSkinViews(view);
     }
 
-    public Resources getSkinPluginResources(){
-        return mSkinPluginResources;
+    public ResourcesManager getResourcesManager(){
+        return mResourcesManager;
     }
 
 }
