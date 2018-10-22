@@ -5,11 +5,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.example.i_to_sky.skin_library.listener.ILoadSkinListener;
 import com.example.i_to_sky.skin_library.listener.ISkinUpdate;
 import com.example.i_to_sky.skin_library.skinview.SkinView;
+import com.example.i_to_sky.skin_library.utils.LogUtil;
 import com.example.i_to_sky.skin_library.utils.SPUtil;
 import com.example.i_to_sky.skin_library.utils.SkinViewUtil;
 
@@ -35,12 +38,13 @@ public class SkinManager {
 
     private List<ISkinUpdate> mSkinObservers = new ArrayList<>();
 
-    private SkinManager(){}
+    private SkinManager() {
+    }
 
-    public static SkinManager getInstance(){
-        if (mInstance == null){
-            synchronized (SkinManager.class){
-                if (mInstance == null){
+    public static SkinManager getInstance() {
+        if (mInstance == null) {
+            synchronized (SkinManager.class) {
+                if (mInstance == null) {
                     mInstance = new SkinManager();
                 }
             }
@@ -53,7 +57,7 @@ public class SkinManager {
      * 若获取到的插件信息不合法，或者插件信息不存在，则return
      * 若获取到的插件信息合法，则开始对app进行换肤，恢复到上一次app的皮肤状态
      */
-    public void init(Context context){
+    public void init(Context context) {
         mContext = context.getApplicationContext();
         SPUtil.getInstance().init(context);
 
@@ -62,23 +66,24 @@ public class SkinManager {
 
         try {
 
-            if (!isValidPluginInfo(skinPluginPath, skinPluginPackage)){
+            if (!isValidPluginInfo(skinPluginPath, skinPluginPackage)) {
                 return;
             }
 
-            loadSkinPlugin(skinPluginPath, skinPluginPackage);
+            initSkinPluginResource(skinPluginPath, skinPluginPackage);
             mSkinPluginPath = skinPluginPath;
             mSkinPluginPackage = skinPluginPackage;
 
 
         } catch (Exception e) {
             e.printStackTrace();
+            LogUtil.e("init skin plugin error");
         }
 
 
     }
 
-    public void loadSkinPlugin(String skinPluginPath, String skinPluginPackage) throws Exception {
+    private void initSkinPluginResource(String skinPluginPath, String skinPluginPackage) throws Exception {
         AssetManager assetManager = AssetManager.class.newInstance();
         Method addAssetPath = assetManager.getClass().getMethod("addAssetPath", String.class);
         addAssetPath.invoke(assetManager, skinPluginPath);
@@ -88,13 +93,13 @@ public class SkinManager {
         mResourcesManager = new ResourcesManager(mSkinPluginResources, skinPluginPackage);
     }
 
-    private boolean isValidPluginInfo(String skinPluginPath, String skinPluginPackage){
-        if (TextUtils.isEmpty(skinPluginPath) || TextUtils.isEmpty(skinPluginPackage)){
+    private boolean isValidPluginInfo(String skinPluginPath, String skinPluginPackage) {
+        if (TextUtils.isEmpty(skinPluginPath) || TextUtils.isEmpty(skinPluginPackage)) {
             return false;
         }
 
         File skinPluginFile = new File(skinPluginPath);
-        if (!skinPluginFile.exists()){
+        if (!skinPluginFile.exists()) {
             return false;
         }
 
@@ -102,32 +107,32 @@ public class SkinManager {
         return skinPluginPackage.equals(packageInfo.packageName);
     }
 
-    private PackageInfo getPackageInfo(String skinPluginPath){
+    private PackageInfo getPackageInfo(String skinPluginPath) {
         PackageManager packageManager = mContext.getPackageManager();
         return packageManager.getPackageArchiveInfo(skinPluginPath, PackageManager.GET_ACTIVITIES);
     }
 
-    public void notifyChangedListeners(){
+    public void notifyChangedListeners() {
 
-        if (mSkinObservers == null){
+        if (mSkinObservers == null) {
             return;
         }
 
-        for (ISkinUpdate observer : mSkinObservers){
+        for (ISkinUpdate observer : mSkinObservers) {
             observer.onNotifySkinUpdate();
         }
 
     }
 
-    public void register(ISkinUpdate observer){
+    public void register(ISkinUpdate observer) {
 
         if (mSkinObservers == null) {
             mSkinObservers = new ArrayList<>();
         }
 
-        if (observer != null){
+        if (observer != null) {
 
-            if (!mSkinObservers.contains(observer)){
+            if (!mSkinObservers.contains(observer)) {
                 mSkinObservers.add(observer);
             }
 
@@ -138,7 +143,7 @@ public class SkinManager {
 
     public void unRegister(ISkinUpdate observer) {
 
-        if (mSkinObservers == null){
+        if (mSkinObservers == null) {
             return;
         }
 
@@ -148,11 +153,84 @@ public class SkinManager {
 
     }
 
-    public List<SkinView> getSkinViews(View view){
+    private void loadSkin(final String skinPluginPath, final String skinPluginPackage, final ILoadSkinListener loadSkinListener) {
+
+        new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                try {
+                    initSkinPluginResource(skinPluginPath, skinPluginPackage);
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LogUtil.e("asynctask init skin error");
+                    loadSkinListener.onLoadError(ILoadSkinListener.UNKNOWN_ERROR_CODE);
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean isLoadSuccess) {
+                super.onPostExecute(isLoadSuccess);
+                if (isLoadSuccess) {
+
+                    try {
+                        updatePluginInfo(skinPluginPath, skinPluginPackage);
+                        notifyChangedListeners();
+                        loadSkinListener.onLoadComplete();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        LogUtil.e("asynctask update skin error");
+                        loadSkinListener.onLoadError(ILoadSkinListener.UNKNOWN_ERROR_CODE);
+                    }
+
+                }
+
+            }
+        }.execute();
+
+    }
+
+    private void updatePluginInfo(String skinPluginPath, String skinPluginPackage) {
+        mSkinPluginPath = skinPluginPath;
+        mSkinPluginPackage = skinPluginPackage;
+
+        SPUtil.getInstance().setSkinPluginPath(skinPluginPath);
+        SPUtil.getInstance().setSkinPluginPackage(skinPluginPackage);
+
+    }
+
+    public void changeSkin(final String skinPluginPath, final String skinPluginPackage, ILoadSkinListener loadSkinListener) {
+
+        LogUtil.d("changeSkin");
+        if (loadSkinListener == null) {
+            LogUtil.d("loadSkinListener is null, set defalut listener");
+            loadSkinListener = ILoadSkinListener.DEFAULT_LOAD_SKIN_LISTENER;
+        }
+
+        ILoadSkinListener callback = loadSkinListener;
+
+        try {
+            if (!isValidPluginInfo(skinPluginPath, skinPluginPackage)) {
+                callback.onLoadError(ILoadSkinListener.ILLEGAL_PARAMS_ERROR_CODE);
+                return;
+            }
+
+            loadSkin(skinPluginPath, skinPluginPackage, callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.e("changeSkin error");
+        }
+
+
+    }
+
+    public List<SkinView> getSkinViews(View view) {
         return SkinViewUtil.getSkinViews(view);
     }
 
-    public ResourcesManager getResourcesManager(){
+    public ResourcesManager getResourcesManager() {
         return mResourcesManager;
     }
 
