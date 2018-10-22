@@ -147,13 +147,15 @@ public class SkinManager {
             return;
         }
 
-        if (!mSkinObservers.contains(observer)) {
+        if (mSkinObservers.contains(observer)) {
             mSkinObservers.remove(observer);
         }
 
     }
 
     private void loadSkin(final String skinPluginPath, final String skinPluginPackage, final ILoadSkinListener loadSkinListener) {
+
+        loadSkinListener.onLoadStart();
 
         new AsyncTask<Void, Void, Boolean>() {
 
