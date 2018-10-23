@@ -1,4 +1,4 @@
-package com.example.i_to_sky.skin_library.demo;
+package com.example.i_to_sky.skin_library.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,7 +16,7 @@ import java.util.List;
  * Created by weiyupei on 2018/10/14.
  */
 
-public class DemoActivity extends AppCompatActivity implements ISkinUpdate {
+public class BaseActivity extends AppCompatActivity implements ISkinUpdate {
 
     private ViewGroup mContentView;
 
