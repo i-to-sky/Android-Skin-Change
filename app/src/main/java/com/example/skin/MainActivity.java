@@ -1,6 +1,5 @@
 package com.example.skin;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.i_to_sky.skin_library.activity.BaseActivity;
