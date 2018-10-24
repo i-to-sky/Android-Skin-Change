@@ -261,8 +261,16 @@ public class SkinManager {
     }
 
     public ResourcesManager getResourcesManager() {
-        if (!mUsePluginResources || mResourcesManager == null) {
+
+        if (mResourcesManager == null) {
             mResourcesManager = new ResourcesManager(mContext.getResources(), mContext.getPackageName());
+        }
+
+        if (!mUsePluginResources) {
+
+            if (!mContext.getPackageName().equals(mResourcesManager.getPluginPackageName())) {
+                mResourcesManager = new ResourcesManager(mContext.getResources(), mContext.getPackageName());
+            }
         }
         return mResourcesManager;
     }

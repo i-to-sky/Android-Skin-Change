@@ -23,6 +23,10 @@ public class ResourcesManager {
         mPluginPackageName = pluginPackageName;
     }
 
+    public String getPluginPackageName() {
+        return mPluginPackageName;
+    }
+
     public Drawable getDrawableByName(String name) {
 
         try {
