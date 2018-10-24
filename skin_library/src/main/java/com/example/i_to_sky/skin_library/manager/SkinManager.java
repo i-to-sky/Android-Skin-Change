@@ -85,6 +85,7 @@ public class SkinManager {
 
         } catch (Exception e) {
             e.printStackTrace();
+            SPUtil.getInstance().clear();
             LogUtil.e("init skin plugin error");
         }
 
@@ -183,6 +184,7 @@ public class SkinManager {
                 } catch (Exception e) {
                     e.printStackTrace();
                     LogUtil.e("asynctask init skin error");
+                    SPUtil.getInstance().clear();
                     loadSkinListener.onLoadError(ILoadSkinListener.UNKNOWN_ERROR_CODE);
                     return false;
                 }
