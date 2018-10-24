@@ -37,6 +37,7 @@ public class SkinManager {
 
     private String mSkinPluginPath;
     private String mSkinPluginPackage;
+    private String mSuffix;
 
     private boolean mUsePluginResources;
 
@@ -73,14 +74,16 @@ public class SkinManager {
 
             String skinPluginPath = SPUtil.getInstance().getSkinPluginPath();
             String skinPluginPackage = SPUtil.getInstance().getSkinPluginPackage();
+            String suffix = SPUtil.getInstance().getResourceSuffix();
 
             if (!isValidPluginInfo(skinPluginPath, skinPluginPackage)) {
                 return;
             }
 
-            initSkinPluginResource(skinPluginPath, skinPluginPackage);
+            initSkinPluginResource(skinPluginPath, skinPluginPackage, suffix);
             mSkinPluginPath = skinPluginPath;
             mSkinPluginPackage = skinPluginPackage;
+            mSuffix = suffix;
 
 
         } catch (Exception e) {
@@ -92,14 +95,14 @@ public class SkinManager {
 
     }
 
-    private void initSkinPluginResource(String skinPluginPath, String skinPluginPackage) throws Exception {
+    private void initSkinPluginResource(String skinPluginPath, String skinPluginPackage, String suffix) throws Exception {
         AssetManager assetManager = AssetManager.class.newInstance();
         Method addAssetPath = assetManager.getClass().getMethod("addAssetPath", String.class);
         addAssetPath.invoke(assetManager, skinPluginPath);
 
         Resources superResources = mContext.getResources();
         mSkinPluginResources = new Resources(assetManager, superResources.getDisplayMetrics(), superResources.getConfiguration());
-        mResourcesManager = new ResourcesManager(mSkinPluginResources, skinPluginPackage);
+        mResourcesManager = new ResourcesManager(mSkinPluginResources, skinPluginPackage, suffix);
 
         mUsePluginResources = true;
     }
@@ -170,7 +173,7 @@ public class SkinManager {
 
     }
 
-    private void loadSkin(final String skinPluginPath, final String skinPluginPackage, final ILoadSkinListener loadSkinListener) {
+    private void loadSkin(final String skinPluginPath, final String skinPluginPackage, final String suffix, final ILoadSkinListener loadSkinListener) {
 
         loadSkinListener.onLoadStart();
 
@@ -179,7 +182,7 @@ public class SkinManager {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 try {
-                    initSkinPluginResource(skinPluginPath, skinPluginPackage);
+                    initSkinPluginResource(skinPluginPath, skinPluginPackage, suffix);
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -235,6 +238,10 @@ public class SkinManager {
     }
 
     public void changeSkin(final String skinPluginPath, final String skinPluginPackage, ILoadSkinListener loadSkinListener) {
+        changeSkin(skinPluginPath, skinPluginPackage, "", loadSkinListener);
+    }
+
+    public void changeSkin(final String skinPluginPath, final String skinPluginPackage, String suffix, ILoadSkinListener loadSkinListener) {
 
         LogUtil.d("changeSkin");
         if (loadSkinListener == null) {
@@ -250,7 +257,7 @@ public class SkinManager {
                 return;
             }
 
-            loadSkin(skinPluginPath, skinPluginPackage, callback);
+            loadSkin(skinPluginPath, skinPluginPackage, suffix, callback);
         } catch (Exception e) {
             e.printStackTrace();
             LogUtil.e("changeSkin error");
@@ -266,13 +273,13 @@ public class SkinManager {
     public ResourcesManager getResourcesManager() {
 
         if (mResourcesManager == null) {
-            mResourcesManager = new ResourcesManager(mContext.getResources(), mContext.getPackageName());
+            mResourcesManager = new ResourcesManager(mContext.getResources(), mContext.getPackageName(), mSuffix);
         }
 
         if (!mUsePluginResources) {
 
             if (!mContext.getPackageName().equals(mResourcesManager.getPluginPackageName())) {
-                mResourcesManager = new ResourcesManager(mContext.getResources(), mContext.getPackageName());
+                mResourcesManager = new ResourcesManager(mContext.getResources(), mContext.getPackageName(), mSuffix);
             }
         }
         return mResourcesManager;

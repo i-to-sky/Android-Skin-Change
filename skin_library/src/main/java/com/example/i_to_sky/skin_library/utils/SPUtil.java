@@ -57,4 +57,14 @@ public class SPUtil {
         return sp.getString(SkinConfig.SKIN_PLUGIN_PACKAGE, "");
     }
 
+    public void setResourceSuffix(String suffix) {
+        SharedPreferences sp = mContext.getSharedPreferences(SkinConfig.SKIN_PLUGIN_INFO, Context.MODE_PRIVATE);
+        sp.edit().putString(SkinConfig.SKIN_RESOURCE_SUFFIX, suffix);
+    }
+
+    public String getResourceSuffix(){
+        SharedPreferences sp = mContext.getSharedPreferences(SkinConfig.SKIN_PLUGIN_INFO, Context.MODE_PRIVATE);
+        return sp.getString(SkinConfig.SKIN_RESOURCE_SUFFIX, "");
+    }
+
 }
