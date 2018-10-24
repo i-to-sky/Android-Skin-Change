@@ -202,6 +202,7 @@ public class SkinManager {
                     } catch (Exception e) {
                         e.printStackTrace();
                         LogUtil.e("asynctask update skin error");
+                        SPUtil.getInstance().clear();
                         loadSkinListener.onLoadError(ILoadSkinListener.UNKNOWN_ERROR_CODE);
                     }
 
