@@ -1,11 +1,13 @@
 package com.example.i_to_sky.skin_library.manager;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -36,6 +38,8 @@ public class SkinManager {
     private String mSkinPluginPath;
     private String mSkinPluginPackage;
 
+    private boolean mUsePluginResources;
+
     private List<ISkinUpdate> mSkinObservers = new ArrayList<>();
 
     private SkinManager() {
@@ -61,10 +65,14 @@ public class SkinManager {
         mContext = context.getApplicationContext();
         SPUtil.getInstance().init(context);
 
-        String skinPluginPath = SPUtil.getInstance().getSkinPluginPath();
-        String skinPluginPackage = SPUtil.getInstance().getSkinPluginPackage();
-
         try {
+
+            if (!hasSelfPermission()) {
+                return;
+            }
+
+            String skinPluginPath = SPUtil.getInstance().getSkinPluginPath();
+            String skinPluginPackage = SPUtil.getInstance().getSkinPluginPackage();
 
             if (!isValidPluginInfo(skinPluginPath, skinPluginPackage)) {
                 return;
@@ -91,6 +99,8 @@ public class SkinManager {
         Resources superResources = mContext.getResources();
         mSkinPluginResources = new Resources(assetManager, superResources.getDisplayMetrics(), superResources.getConfiguration());
         mResourcesManager = new ResourcesManager(mSkinPluginResources, skinPluginPackage);
+
+        mUsePluginResources = true;
     }
 
     private boolean isValidPluginInfo(String skinPluginPath, String skinPluginPackage) {
@@ -109,7 +119,13 @@ public class SkinManager {
 
     private PackageInfo getPackageInfo(String skinPluginPath) {
         PackageManager packageManager = mContext.getPackageManager();
-        return packageManager.getPackageArchiveInfo(skinPluginPath, PackageManager.GET_ACTIVITIES);
+
+        try {
+            return packageManager.getPackageArchiveInfo(skinPluginPath, PackageManager.GET_ACTIVITIES);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void notifyChangedListeners() {
@@ -233,7 +249,14 @@ public class SkinManager {
     }
 
     public ResourcesManager getResourcesManager() {
+        if (!mUsePluginResources || mResourcesManager == null) {
+            mResourcesManager = new ResourcesManager(mContext.getResources(), mContext.getPackageName());
+        }
         return mResourcesManager;
+    }
+
+    public boolean hasSelfPermission() {
+        return ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
 }

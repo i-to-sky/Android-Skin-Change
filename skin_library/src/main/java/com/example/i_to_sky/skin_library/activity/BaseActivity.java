@@ -1,11 +1,16 @@
 package com.example.i_to_sky.skin_library.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.i_to_sky.skin_library.listener.ILoadSkinListener;
 import com.example.i_to_sky.skin_library.listener.ISkinUpdate;
 import com.example.i_to_sky.skin_library.manager.SkinManager;
 import com.example.i_to_sky.skin_library.skinview.SkinView;
@@ -16,7 +21,12 @@ import java.util.List;
  * Created by weiyupei on 2018/10/14.
  */
 
-public class BaseActivity extends AppCompatActivity implements ISkinUpdate {
+public class BaseActivity extends AppCompatActivity implements ISkinUpdate, ILoadSkinListener {
+
+    private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 0;
+
+    private String mSkinPluginPath;
+    private String mSkinPluginPackage;
 
     private ViewGroup mContentView;
 
@@ -59,4 +69,42 @@ public class BaseActivity extends AppCompatActivity implements ISkinUpdate {
         }
     }
 
+    @Override
+    public void onLoadStart() {
+
+    }
+
+    @Override
+    public void onLoadComplete() {
+
+    }
+
+    @Override
+    public void onLoadError(int errorCode) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        doAfterRequest(requestCode, grantResults);
+    }
+
+    private void doAfterRequest(int requestCode, int [] grantResults) {
+        if (requestCode == WRITE_EXTERNAL_STORAGE_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                SkinManager.getInstance().changeSkin(mSkinPluginPath, mSkinPluginPackage, this);
+            }
+        }
+    }
+
+    protected void changeSkin(String skinPluginPath, String skinPluginPackage) {
+        mSkinPluginPath = skinPluginPath;
+        mSkinPluginPackage = skinPluginPackage;
+        if (SkinManager.getInstance().hasSelfPermission()) {
+            SkinManager.getInstance().changeSkin(skinPluginPath, skinPluginPackage, this);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
+        }
+    }
 }
