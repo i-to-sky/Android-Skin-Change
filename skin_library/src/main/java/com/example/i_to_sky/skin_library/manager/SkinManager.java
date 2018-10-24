@@ -219,6 +219,18 @@ public class SkinManager {
 
     }
 
+    private void clearSkinInfo() {
+        mSkinPluginPath = null;
+        mSkinPluginPackage = null;
+        mUsePluginResources = false;
+        SPUtil.getInstance().clear();
+    }
+
+    public void removeSkinInfo() {
+        clearSkinInfo();
+        notifyChangedListeners();
+    }
+
     public void changeSkin(final String skinPluginPath, final String skinPluginPackage, ILoadSkinListener loadSkinListener) {
 
         LogUtil.d("changeSkin");

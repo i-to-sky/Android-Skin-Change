@@ -32,6 +32,11 @@ public class SPUtil {
         mContext = context.getApplicationContext();
     }
 
+    public void clear() {
+        SharedPreferences sp = mContext.getSharedPreferences(SkinConfig.SKIN_PLUGIN_INFO, Context.MODE_PRIVATE);
+        sp.edit().clear().commit();
+    }
+
     public void setSkinPluginPath(String skinPluginPath) {
         SharedPreferences sp = mContext.getSharedPreferences(SkinConfig.SKIN_PLUGIN_INFO, Context.MODE_PRIVATE);
         sp.edit().putString(SkinConfig.SKIN_PLUGIN_PATH, skinPluginPath);
