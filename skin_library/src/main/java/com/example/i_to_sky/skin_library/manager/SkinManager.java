@@ -230,6 +230,7 @@ public class SkinManager {
     private void clearSkinInfo() {
         mSkinPluginPath = null;
         mSkinPluginPackage = null;
+        mSuffix = null;
         mUsePluginResources = false;
         SPUtil.getInstance().clear();
     }
@@ -239,11 +240,21 @@ public class SkinManager {
         notifyChangedListeners();
     }
 
-    public void changeSkin(final String skinPluginPath, final String skinPluginPackage, ILoadSkinListener loadSkinListener) {
-        changeSkin(skinPluginPath, skinPluginPackage, "", loadSkinListener);
+    //应用内换肤
+    public void changeSkinInner(String suffix) {
+        clearSkinInfo();
+        mSuffix = suffix;
+        SPUtil.getInstance().setResourceSuffix(suffix);
+        notifyChangedListeners();
     }
 
-    public void changeSkin(final String skinPluginPath, final String skinPluginPackage, String suffix, ILoadSkinListener loadSkinListener) {
+    //插件换肤
+    public void changeSkinByPlugin(final String skinPluginPath, final String skinPluginPackage, ILoadSkinListener loadSkinListener) {
+        changeSkinByPlugin(skinPluginPath, skinPluginPackage, "", loadSkinListener);
+    }
+
+    //插件换肤
+    public void changeSkinByPlugin(final String skinPluginPath, final String skinPluginPackage, String suffix, ILoadSkinListener loadSkinListener) {
 
         LogUtil.d("changeSkin");
         if (loadSkinListener == null) {

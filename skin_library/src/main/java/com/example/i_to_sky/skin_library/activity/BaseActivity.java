@@ -94,7 +94,7 @@ public class BaseActivity extends AppCompatActivity implements ISkinUpdate, ILoa
     private void doAfterRequest(int requestCode, int [] grantResults) {
         if (requestCode == WRITE_EXTERNAL_STORAGE_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                SkinManager.getInstance().changeSkin(mSkinPluginPath, mSkinPluginPackage, mSuffix,this);
+                SkinManager.getInstance().changeSkinByPlugin(mSkinPluginPath, mSkinPluginPackage, mSuffix,this);
             }
         }
     }
@@ -108,7 +108,7 @@ public class BaseActivity extends AppCompatActivity implements ISkinUpdate, ILoa
         mSkinPluginPackage = skinPluginPackage;
         mSuffix = suffix;
         if (SkinManager.getInstance().hasSelfPermission()) {
-            SkinManager.getInstance().changeSkin(skinPluginPath, skinPluginPackage, suffix, this);
+            SkinManager.getInstance().changeSkinByPlugin(skinPluginPath, skinPluginPackage, suffix, this);
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
         }
