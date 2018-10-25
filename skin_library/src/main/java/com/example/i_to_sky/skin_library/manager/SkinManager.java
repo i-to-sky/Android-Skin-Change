@@ -35,8 +35,8 @@ public class SkinManager {
     private Resources mSkinPluginResources;
     private ResourcesManager mResourcesManager;
 
-    private String mSkinPluginPath;
-    private String mSkinPluginPackage;
+    private String mSkinPath;
+    private String mSkinPackage;
     private String mSuffix;
 
     private boolean mUsePluginResources;
@@ -81,8 +81,8 @@ public class SkinManager {
             }
 
             initSkinPluginResource(skinPluginPath, skinPluginPackage, suffix);
-            mSkinPluginPath = skinPluginPath;
-            mSkinPluginPackage = skinPluginPackage;
+            mSkinPath = skinPluginPath;
+            mSkinPackage = skinPluginPackage;
             mSuffix = suffix;
 
 
@@ -217,8 +217,8 @@ public class SkinManager {
     }
 
     private void updatePluginInfo(String skinPluginPath, String skinPluginPackage, String suffix) {
-        mSkinPluginPath = skinPluginPath;
-        mSkinPluginPackage = skinPluginPackage;
+        mSkinPath = skinPluginPath;
+        mSkinPackage = skinPluginPackage;
         mSuffix = suffix;
 
         SPUtil.getInstance().setSkinPluginPath(skinPluginPath);
@@ -228,9 +228,9 @@ public class SkinManager {
     }
 
     private void clearSkinInfo() {
-        mSkinPluginPath = null;
-        mSkinPluginPackage = null;
-        mSuffix = null;
+        mSkinPath = "";
+        mSkinPackage = "";
+        mSuffix = "";
         mUsePluginResources = false;
         SPUtil.getInstance().clear();
     }
@@ -243,6 +243,9 @@ public class SkinManager {
     //应用内换肤
     public void changeSkinInner(String suffix) {
         clearSkinInfo();
+        if (suffix == null) {
+            suffix = "";
+        }
         mSuffix = suffix;
         SPUtil.getInstance().setResourceSuffix(suffix);
         notifyChangedListeners();
@@ -291,7 +294,8 @@ public class SkinManager {
 
         if (!mUsePluginResources) {
 
-            if (!mContext.getPackageName().equals(mResourcesManager.getPluginPackageName())) {
+            if (!(mContext.getPackageName().equals(mResourcesManager.getPackageName())
+                    && mSuffix.equals(mResourcesManager.getResourcesSuffix()))) {
                 mResourcesManager = new ResourcesManager(mContext.getResources(), mContext.getPackageName(), mSuffix);
             }
         }

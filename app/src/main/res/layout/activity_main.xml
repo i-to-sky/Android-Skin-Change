@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="skin:title_color:textColor"
-        android:text="换肤：白色"
+        android:text="插件换肤：白色"
         android:textColor="@color/title_color"/>
 
     <Button
@@ -19,7 +19,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="skin:title_color:textColor"
-        android:text="换肤: 绿色"
+        android:text="插件换肤: 绿色"
+        android:textColor="@color/title_color"/>
+
+    <Button
+        android:id="@+id/change_skin_blue_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:tag="skin:title_color:textColor"
+        android:text="应用内换肤: 蓝色"
         android:textColor="@color/title_color"/>
 
     <Button

@@ -18,6 +18,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     Button mChangeSkinBtn;
     Button mResetSkinBtn;
     Button mGreenSkinBtn;
+    Button mBlueSkinBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mResetSkinBtn.setOnClickListener(this);
         mGreenSkinBtn = (Button) findViewById(R.id.change_skin_green_btn);
         mGreenSkinBtn.setOnClickListener(this);
+        mBlueSkinBtn = (Button) findViewById(R.id.change_skin_blue_btn);
+        mBlueSkinBtn.setOnClickListener(this);
 
     }
 
@@ -47,6 +50,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.change_skin_green_btn:
                 changeSkin(SDCARD_PATH, PACKAGE_NAME, "green");
+                break;
+            case R.id.change_skin_blue_btn:
+                SkinManager.getInstance().changeSkinInner("blue");
                 break;
 
         }

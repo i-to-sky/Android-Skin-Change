@@ -29,8 +29,12 @@ public class ResourcesManager {
         mSuffix = suffix;
     }
 
-    public String getPluginPackageName() {
+    public String getPackageName() {
         return mPluginPackageName;
+    }
+
+    public String getResourcesSuffix() {
+        return mSuffix;
     }
 
     public Drawable getDrawableByName(String name) {
