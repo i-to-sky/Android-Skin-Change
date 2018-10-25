@@ -33,6 +33,13 @@ public class ResourcesManager {
         return mPluginPackageName;
     }
 
+    public void setResourcesSuffix(String suffix) {
+        if (suffix == null) {
+            suffix = "";
+        }
+        mSuffix = suffix;
+    }
+
     public String getResourcesSuffix() {
         return mSuffix;
     }

@@ -273,6 +273,18 @@ public class SkinManager {
                 return;
             }
 
+            if (isValidResourcesManager(skinPluginPackage)) {
+
+                if (!suffix.equals(mResourcesManager.getResourcesSuffix())) {
+                    mResourcesManager.setResourcesSuffix(suffix);
+                }
+
+                updatePluginInfo(skinPluginPath, skinPluginPackage, suffix);
+                notifyChangedListeners();
+                callback.onLoadComplete();
+                return;
+            }
+
             loadSkin(skinPluginPath, skinPluginPackage, suffix, callback);
         } catch (Exception e) {
             e.printStackTrace();
@@ -294,12 +306,20 @@ public class SkinManager {
 
         if (!mUsePluginResources) {
 
-            if (!(mContext.getPackageName().equals(mResourcesManager.getPackageName())
-                    && mSuffix.equals(mResourcesManager.getResourcesSuffix()))) {
+            if (!isValidResourcesManager(mContext.getPackageName())) {
                 mResourcesManager = new ResourcesManager(mContext.getResources(), mContext.getPackageName(), mSuffix);
             }
+
+            if (!mSuffix.equals(mResourcesManager.getResourcesSuffix())) {
+                mResourcesManager.setResourcesSuffix(mSuffix);
+            }
+
         }
         return mResourcesManager;
+    }
+
+    private boolean isValidResourcesManager(String packageName) {
+        return mResourcesManager != null && packageName.equals(mResourcesManager.getPackageName());
     }
 
     public boolean hasSelfPermission() {
