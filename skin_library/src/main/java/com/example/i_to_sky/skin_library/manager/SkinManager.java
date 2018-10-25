@@ -199,7 +199,7 @@ public class SkinManager {
                 if (isLoadSuccess) {
 
                     try {
-                        updatePluginInfo(skinPluginPath, skinPluginPackage);
+                        updatePluginInfo(skinPluginPath, skinPluginPackage, suffix);
                         notifyChangedListeners();
                         loadSkinListener.onLoadComplete();
                     } catch (Exception e) {
@@ -216,12 +216,14 @@ public class SkinManager {
 
     }
 
-    private void updatePluginInfo(String skinPluginPath, String skinPluginPackage) {
+    private void updatePluginInfo(String skinPluginPath, String skinPluginPackage, String suffix) {
         mSkinPluginPath = skinPluginPath;
         mSkinPluginPackage = skinPluginPackage;
+        mSuffix = suffix;
 
         SPUtil.getInstance().setSkinPluginPath(skinPluginPath);
         SPUtil.getInstance().setSkinPluginPackage(skinPluginPackage);
+        SPUtil.getInstance().setResourceSuffix(suffix);
 
     }
 
