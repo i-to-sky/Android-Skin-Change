@@ -50,18 +50,18 @@ public class BaseActivity extends AppCompatActivity implements ISkinUpdate, ILoa
         mContentView.post(new Runnable() {
             @Override
             public void run() {
-                updateView();
+                updateView(mContentView);
             }
         });
     }
 
     @Override
     public void onNotifySkinUpdate() {
-        updateView();
+        updateView(mContentView);
     }
 
-    private void updateView() {
-        List<SkinView> skinViews = SkinManager.getInstance().getSkinViews(mContentView);
+    public void updateView(View view) {
+        List<SkinView> skinViews = SkinManager.getInstance().getSkinViews(view);
         if (skinViews == null || skinViews.isEmpty()) {
             return;
         }
